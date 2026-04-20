@@ -1,0 +1,49 @@
+# --- Secrets ---
+.env
+.env.local
+.env.*.local
+*.pem
+
+# --- Node / Astro ---
+node_modules/
+dist/
+.astro/
+.output/
+.vercel/
+.netlify/
+.wrangler/
+.vite/
+*.log
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+build/
+uv.lock
+
+# --- Worker runtime artefacts ---
+worker/tmp/
+/tmp/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Large local assets (clips are served from R2 in Phase 2+) ---
+# Phase 1 keeps hand-cut samples under site/public/clips/ — commit them intentionally
+# Nothing excluded here yet
+
+# --- OS / tooling ---
+.npm/
+.pnpm-store/

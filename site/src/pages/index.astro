@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ClipCard from '../components/ClipCard.astro';
+import ClipModal from '../components/ClipModal.astro';
+import { getClips } from '../lib/clips';
+const clips = await getClips();
+---
+<Layout title="Clips">
+  <header class="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-900 bg-zinc-950/80 px-3 py-3 backdrop-blur">
+    <h1 class="text-base font-semibold tracking-tight">Clips</h1>
+    <span class="text-xs text-zinc-500">{clips.length} saved</span>
+  </header>
+
+  {clips.length === 0 ? (
+    <div class="flex min-h-[60vh] flex-col items-center justify-center gap-2 p-8 text-center">
+      <p class="text-zinc-400">No clips yet.</p>
+      <p class="text-xs text-zinc-600">
+        Phase 1: drop MP4s into <code class="text-zinc-400">site/public/clips/</code> and add entries to
+        <code class="text-zinc-400">site/src/data/clips.json</code>.
+      </p>
+      <p class="text-xs text-zinc-600">Phase 5: share an Instagram Reel to your Telegram bot.</p>
+    </div>
+  ) : (
+    <main class="grid grid-cols-2 gap-2 p-2 sm:grid-cols-3 lg:grid-cols-4">
+      {clips.map((clip) => <ClipCard clip={clip} />)}
+    </main>
+  )}
+
+  <ClipModal />
+</Layout>

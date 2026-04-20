@@ -1,0 +1,90 @@
+---
+// Single shared modal. A small client script populates it on card tap.
+---
+<dialog
+  id="clip-modal"
+  class="m-auto rounded-xl bg-zinc-950 p-0 text-zinc-100 backdrop:bg-black/80"
+>
+  <div class="relative">
+    <video
+      id="clip-video"
+      muted
+      loop
+      playsinline
+      autoplay
+      preload="metadata"
+      class="block w-full max-h-[80vh] rounded-t-xl bg-black"
+    ></video>
+    <button
+      id="clip-close"
+      type="button"
+      aria-label="Close"
+      class="absolute right-2 top-2 rounded-full bg-black/60 p-2 text-white backdrop-blur hover:bg-black/80"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+  <div class="space-y-2 p-4">
+    <h2 id="clip-name" class="text-lg font-semibold"></h2>
+    <div id="clip-meta" class="text-xs text-zinc-400"></div>
+    <ul id="clip-cues" class="list-disc space-y-1 pl-5 text-sm"></ul>
+  </div>
+</dialog>
+
+<script>
+  const modal = document.getElementById('clip-modal') as HTMLDialogElement | null;
+  const video = document.getElementById('clip-video') as HTMLVideoElement | null;
+  const nameEl = document.getElementById('clip-name');
+  const metaEl = document.getElementById('clip-meta');
+  const cuesEl = document.getElementById('clip-cues');
+  const closeBtn = document.getElementById('clip-close');
+
+  if (modal && video && nameEl && cuesEl && metaEl && closeBtn) {
+    const cards = document.querySelectorAll<HTMLButtonElement>('.clip-card');
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        video.src = card.dataset.clip || '';
+        video.poster = card.dataset.thumb || '';
+        nameEl.textContent = card.dataset.name || '';
+
+        const meta: string[] = [];
+        if (card.dataset.reps) meta.push(`${card.dataset.reps} reps`);
+        if (card.dataset.equipment) meta.push(card.dataset.equipment);
+        metaEl.textContent = meta.join(' · ');
+
+        cuesEl.innerHTML = '';
+        try {
+          const cues: string[] = JSON.parse(card.dataset.cues || '[]');
+          for (const cue of cues) {
+            const li = document.createElement('li');
+            li.textContent = cue;
+            cuesEl.appendChild(li);
+          }
+        } catch {}
+
+        modal.showModal();
+        video.play().catch(() => {
+          /* Autoplay rejected (rare on Android Chrome with muted). User can tap play. */
+        });
+      });
+    });
+
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      const rect = (modal as HTMLDialogElement).getBoundingClientRect();
+      const inDialog =
+        e.clientY >= rect.top && e.clientY <= rect.bottom &&
+        e.clientX >= rect.left && e.clientX <= rect.right;
+      if (!inDialog) modal.close();
+    });
+
+    closeBtn.addEventListener('click', () => modal.close());
+
+    // Pause + clear on close so we don't keep loading off-screen
+    modal.addEventListener('close', () => {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    });
+  }
+</script>

@@ -41,8 +41,22 @@ Thumbs.db
 desktop.ini
 
 # --- Large local assets (clips are served from R2 in Phase 2+) ---
-# Phase 1 keeps hand-cut samples under site/public/clips/ — commit them intentionally
-# Nothing excluded here yet
+# Phase 3 stages new clips under site/public/{clips,thumbs}/ as a handoff to
+# migrate.mjs; once uploaded to R2 they shouldn't live in the repo.
+site/public/clips/*.mp4
+site/public/thumbs/*.jpg
+# Phase 3 raw IG Reel downloads — keep out of git
+scripts/phase3/raw/
+scripts/phase3/page.html
+scripts/phase3/download_log.txt
+scripts/phase3/migrate_run.log
+
+# --- CF diagnostic scratch (phase 2 debug) ---
+cfbuild*.json
+cfstatus*.json
+site.html
+page.html
+cfbuild_pretty.txt
 
 # --- OS / tooling ---
 .npm/

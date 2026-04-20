@@ -65,13 +65,22 @@ const pgClient = new pg.Client({
 
 // ---- Helpers -----------------------------------------------------------
 async function objectExists(key) {
-  try {
-    await s3.send(new HeadObjectCommand({ Bucket: R2_BUCKET, Key: key }));
-    return true;
-  } catch (e) {
-    if (e?.$metadata?.httpStatusCode === 404 || e?.name === 'NotFound') return false;
-    throw e;
+  const maxAttempts = 5;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await s3.send(new HeadObjectCommand({ Bucket: R2_BUCKET, Key: key }));
+      return true;
+    } catch (e) {
+      if (e?.$metadata?.httpStatusCode === 404 || e?.name === 'NotFound') return false;
+      const transient = ['EPROTO', 'EPIPE', 'ECONNRESET', 'ETIMEDOUT'].includes(e?.code)
+        || /decryption failed|bad record mac|ERR_SSL/i.test(e?.message || e?.code || '');
+      if (!transient || attempt === maxAttempts) throw e;
+      const backoff = 500 * attempt;
+      console.log(`  head retry ${attempt}/${maxAttempts} after ${e.code || e.name} — sleeping ${backoff}ms`);
+      await new Promise((r) => setTimeout(r, backoff));
+    }
   }
+  return false;
 }
 
 async function uploadFile(absPath, key, contentType) {
@@ -108,9 +117,9 @@ async function uploadFile(absPath, key, contentType) {
   }
 }
 
-// Map a clip_src path like "/clips/duscu-01.mp4" to R2 key "clips/duscu-01.mp4"
-// (strip leading slash). Same for thumb_src.
-const keyFromPath = (p) => p.replace(/^\//, '');
+// clips.json now stores R2 keys directly in clip_key/thumb_key (e.g. "clips/duscu-01.mp4").
+// Tolerate a stray leading slash in case an older draft snuck one in.
+const keyFromPath = (p) => String(p).replace(/^\//, '');
 
 // ---- Main --------------------------------------------------------------
 async function main() {
@@ -124,8 +133,8 @@ async function main() {
   for (const c of filtered) {
     console.log(`\n[${c.id}] ${c.exercise_name}`);
 
-    const clipKey  = keyFromPath(c.clip_src);
-    const thumbKey = keyFromPath(c.thumb_src);
+    const clipKey  = keyFromPath(c.clip_key ?? c.clip_src);
+    const thumbKey = keyFromPath(c.thumb_key ?? c.thumb_src);
     const clipAbs  = resolve(REPO_ROOT, 'site', 'public', clipKey);
     const thumbAbs = resolve(REPO_ROOT, 'site', 'public', thumbKey);
 

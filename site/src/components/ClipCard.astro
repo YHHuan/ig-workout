@@ -18,7 +18,9 @@ const lowConfidence = (clip.exercise_name_confidence ?? 1) < 0.7;
   data-thumb={clip.thumb_src}
   data-cues={JSON.stringify(clip.form_cues ?? [])}
   data-reps={clip.rep_count ?? ''}
+  data-muscle={clip.muscle_group ?? ''}
   data-equipment={(clip.equipment ?? []).join(', ')}
+  data-confidence={clip.exercise_name_confidence ?? 1}
 >
   {clip.thumb_src ? (
     <img

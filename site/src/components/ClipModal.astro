@@ -1,9 +1,9 @@
 ---
-// Single shared modal. A small client script populates it on card tap.
+import { CATEGORIES, CATEGORY_LABELS } from '../lib/clips';
 ---
 <dialog
   id="clip-modal"
-  class="m-auto rounded-xl bg-zinc-950 p-0 text-zinc-100 backdrop:bg-black/80"
+  class="m-auto w-full max-w-lg rounded-xl bg-zinc-950 p-0 text-zinc-100 backdrop:bg-black/80"
 >
   <div class="relative">
     <video
@@ -13,8 +13,17 @@
       playsinline
       autoplay
       preload="metadata"
-      class="block w-full max-h-[80vh] rounded-t-xl bg-black"
+      class="block w-full max-h-[60vh] rounded-t-xl bg-black"
     ></video>
+    <button
+      id="clip-edit-toggle"
+      type="button"
+      aria-label="Edit"
+      data-authed="false"
+      class="absolute left-2 top-2 hidden rounded-full bg-black/60 p-2 text-white backdrop-blur hover:bg-black/80 data-[authed=true]:block"
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+    </button>
     <button
       id="clip-close"
       type="button"
@@ -24,44 +33,271 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </button>
   </div>
-  <div class="space-y-2 p-4">
+
+  {/* ---------- view mode ---------- */}
+  <div id="clip-view" class="space-y-2 p-4">
     <h2 id="clip-name" class="text-lg font-semibold"></h2>
     <div id="clip-meta" class="text-xs text-zinc-400"></div>
     <ul id="clip-cues" class="list-disc space-y-1 pl-5 text-sm"></ul>
   </div>
+
+  {/* ---------- edit mode ---------- */}
+  <form id="clip-edit" class="hidden space-y-3 p-4" novalidate>
+    <label class="block space-y-1">
+      <span class="text-xs uppercase tracking-wide text-zinc-400">名稱</span>
+      <input
+        id="edit-name"
+        type="text"
+        autocomplete="off"
+        class="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm focus:border-white focus:outline-none"
+      />
+    </label>
+    <label class="block space-y-1">
+      <span class="text-xs uppercase tracking-wide text-zinc-400">分類</span>
+      <select
+        id="edit-category"
+        class="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm focus:border-white focus:outline-none"
+      >
+        {CATEGORIES.map((c) => (
+          <option value={c}>{CATEGORY_LABELS[c]}</option>
+        ))}
+      </select>
+    </label>
+    <label class="block space-y-1">
+      <span class="text-xs uppercase tracking-wide text-zinc-400">肌群（optional）</span>
+      <input
+        id="edit-muscle"
+        type="text"
+        autocomplete="off"
+        class="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm focus:border-white focus:outline-none"
+      />
+    </label>
+    <label class="block space-y-1">
+      <span class="text-xs uppercase tracking-wide text-zinc-400">器材（以逗號分隔）</span>
+      <input
+        id="edit-equipment"
+        type="text"
+        autocomplete="off"
+        placeholder="barbell, bench"
+        class="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm focus:border-white focus:outline-none"
+      />
+    </label>
+    <label class="block space-y-1">
+      <span class="text-xs uppercase tracking-wide text-zinc-400">註解 / 動作提示（每行一個）</span>
+      <textarea
+        id="edit-cues"
+        rows="3"
+        class="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm focus:border-white focus:outline-none"
+      ></textarea>
+    </label>
+    <div id="edit-error" class="hidden rounded-md bg-red-950/60 px-3 py-2 text-sm text-red-200"></div>
+    <div class="flex gap-2 pt-1">
+      <button
+        type="submit"
+        id="edit-save"
+        class="flex-1 rounded-md bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-zinc-200 disabled:opacity-50"
+      >存檔</button>
+      <button
+        type="button"
+        id="edit-cancel"
+        class="rounded-md border border-zinc-700 px-4 py-2 text-sm hover:bg-zinc-900"
+      >取消</button>
+    </div>
+  </form>
 </dialog>
 
 <script>
+  const TOKEN_KEY = 'ig-workout-edit-token';
+  const CATEGORIES = ['core', 'legs', 'upper', 'full_body', 'mobility'] as const;
+
+  // --- auth bootstrap ---------------------------------------------------
+  // Paste `https://…/?auth=<TOKEN>` (or `#auth=<TOKEN>`) once on the phone;
+  // the token goes into localStorage and the URL is cleaned.
+  (function handleAuthParam() {
+    const url = new URL(location.href);
+    const fromQuery = url.searchParams.get('auth');
+    const fromHash = (location.hash.match(/[#&]auth=([^&]+)/) || [])[1];
+    const token = fromQuery ?? (fromHash ? decodeURIComponent(fromHash) : null);
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+      url.searchParams.delete('auth');
+      history.replaceState({}, '', url.pathname + (url.search || '') + location.hash.replace(/[#&]?auth=[^&]*/, ''));
+    }
+  })();
+
   const modal = document.getElementById('clip-modal') as HTMLDialogElement | null;
   const video = document.getElementById('clip-video') as HTMLVideoElement | null;
   const nameEl = document.getElementById('clip-name');
   const metaEl = document.getElementById('clip-meta');
   const cuesEl = document.getElementById('clip-cues');
   const closeBtn = document.getElementById('clip-close');
+  const editToggle = document.getElementById('clip-edit-toggle') as HTMLButtonElement | null;
+  const viewPane = document.getElementById('clip-view');
+  const editPane = document.getElementById('clip-edit') as HTMLFormElement | null;
+  const editName = document.getElementById('edit-name') as HTMLInputElement | null;
+  const editCat = document.getElementById('edit-category') as HTMLSelectElement | null;
+  const editMuscle = document.getElementById('edit-muscle') as HTMLInputElement | null;
+  const editEquipment = document.getElementById('edit-equipment') as HTMLInputElement | null;
+  const editCues = document.getElementById('edit-cues') as HTMLTextAreaElement | null;
+  const editSave = document.getElementById('edit-save') as HTMLButtonElement | null;
+  const editCancel = document.getElementById('edit-cancel');
+  const editError = document.getElementById('edit-error');
 
-  if (modal && video && nameEl && cuesEl && metaEl && closeBtn) {
+  if (
+    modal && video && nameEl && metaEl && cuesEl && closeBtn &&
+    editToggle && viewPane && editPane && editName && editCat &&
+    editMuscle && editEquipment && editCues && editSave && editCancel && editError
+  ) {
+    // Reveal pencil if we have a token.
+    if (localStorage.getItem(TOKEN_KEY)) {
+      editToggle.dataset.authed = 'true';
+    }
+
+    let currentCard: HTMLElement | null = null;
+
+    function populateView(card: HTMLElement) {
+      nameEl!.textContent = card.dataset.name || '(未命名)';
+
+      const meta: string[] = [];
+      if (card.dataset.muscle) meta.push(card.dataset.muscle);
+      if (card.dataset.reps) meta.push(`${card.dataset.reps} reps`);
+      if (card.dataset.equipment) meta.push(card.dataset.equipment);
+      metaEl!.textContent = meta.join(' · ');
+
+      cuesEl!.innerHTML = '';
+      try {
+        const cues: string[] = JSON.parse(card.dataset.cues || '[]');
+        for (const cue of cues) {
+          const li = document.createElement('li');
+          li.textContent = cue;
+          cuesEl!.appendChild(li);
+        }
+      } catch {}
+    }
+
+    function populateEdit(card: HTMLElement) {
+      editName!.value = card.dataset.name || '';
+      const cat = card.dataset.category || '';
+      editCat!.value = (CATEGORIES as readonly string[]).includes(cat) ? cat : 'core';
+      editMuscle!.value = card.dataset.muscle || '';
+      editEquipment!.value = card.dataset.equipment || '';
+      let cues: string[] = [];
+      try { cues = JSON.parse(card.dataset.cues || '[]'); } catch {}
+      editCues!.value = cues.join('\n');
+      editError!.classList.add('hidden');
+      editError!.textContent = '';
+    }
+
+    function showView() {
+      viewPane!.classList.remove('hidden');
+      editPane!.classList.add('hidden');
+    }
+
+    function showEdit() {
+      viewPane!.classList.add('hidden');
+      editPane!.classList.remove('hidden');
+      editName!.focus();
+    }
+
+    // Patch the card's data-* + visible labels + dashed border after a save,
+    // so the homepage reflects the edit without a page reload.
+    function patchCardDom(card: HTMLElement, clip: Record<string, unknown>) {
+      if (typeof clip.exercise_name === 'string') card.dataset.name = clip.exercise_name;
+      if (typeof clip.category === 'string') card.dataset.category = clip.category;
+      card.dataset.muscle = typeof clip.muscle_group === 'string' ? clip.muscle_group : '';
+      const eq = Array.isArray(clip.equipment) ? (clip.equipment as string[]).join(', ') : '';
+      card.dataset.equipment = eq;
+      card.dataset.cues = JSON.stringify(Array.isArray(clip.form_cues) ? clip.form_cues : []);
+      const conf = typeof clip.exercise_name_confidence === 'number' ? clip.exercise_name_confidence : 1;
+      card.dataset.confidence = String(conf);
+
+      // Update the visible label inside the card (first `.text-sm` inside
+      // the bottom-gradient overlay — see ClipCard.astro).
+      const label = card.querySelector<HTMLDivElement>('.absolute.bottom-0 .text-sm');
+      if (label) label.textContent = card.dataset.name || '';
+
+      // Update amber dashed border.
+      const shouldAmber = conf < 0.7;
+      const amberClasses = ['border', 'border-dashed', 'border-amber-500/60'];
+      if (shouldAmber) {
+        card.classList.add(...amberClasses);
+      } else {
+        card.classList.remove(...amberClasses);
+      }
+    }
+
+    editToggle.addEventListener('click', () => {
+      if (!currentCard) return;
+      populateEdit(currentCard);
+      showEdit();
+    });
+
+    editCancel.addEventListener('click', () => {
+      showView();
+    });
+
+    editPane.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentCard) return;
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) {
+        editError!.textContent = '找不到 edit token — 重新用 ?auth=… 開網址';
+        editError!.classList.remove('hidden');
+        return;
+      }
+
+      const name = editName!.value.trim();
+      const patch: Record<string, unknown> = {
+        exercise_name: name,
+        category: editCat!.value,
+        muscle_group: editMuscle!.value.trim() || null,
+        equipment: editEquipment!.value.split(',').map((s) => s.trim()).filter(Boolean),
+        form_cues: editCues!.value.split('\n').map((s) => s.trim()).filter(Boolean),
+        // Non-empty name from a human = high confidence → drop amber border.
+        exercise_name_confidence: name ? 1.0 : 0.0,
+      };
+
+      editSave!.disabled = true;
+      editError!.classList.add('hidden');
+      try {
+        const res = await fetch(`/api/clip/${encodeURIComponent(currentCard.dataset.id || '')}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(patch),
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          if (res.status === 401) {
+            localStorage.removeItem(TOKEN_KEY);
+            editToggle!.dataset.authed = 'false';
+          }
+          editError!.textContent = `${res.status}: ${body.error || 'save failed'}`;
+          editError!.classList.remove('hidden');
+          return;
+        }
+        patchCardDom(currentCard, body.clip || patch);
+        showView();
+        populateView(currentCard);
+      } catch (err) {
+        editError!.textContent = (err as Error).message || 'network error';
+        editError!.classList.remove('hidden');
+      } finally {
+        editSave!.disabled = false;
+      }
+    });
+
+    // --- existing view-mode wiring ---------------------------------------
     const cards = document.querySelectorAll<HTMLButtonElement>('.clip-card');
     cards.forEach((card) => {
       card.addEventListener('click', () => {
+        currentCard = card;
         video.src = card.dataset.clip || '';
         video.poster = card.dataset.thumb || '';
-        nameEl.textContent = card.dataset.name || '';
-
-        const meta: string[] = [];
-        if (card.dataset.reps) meta.push(`${card.dataset.reps} reps`);
-        if (card.dataset.equipment) meta.push(card.dataset.equipment);
-        metaEl.textContent = meta.join(' · ');
-
-        cuesEl.innerHTML = '';
-        try {
-          const cues: string[] = JSON.parse(card.dataset.cues || '[]');
-          for (const cue of cues) {
-            const li = document.createElement('li');
-            li.textContent = cue;
-            cuesEl.appendChild(li);
-          }
-        } catch {}
-
+        populateView(card);
+        showView();
         modal.showModal();
         video.play().catch(() => {
           /* Autoplay rejected (rare on Android Chrome with muted). User can tap play. */
@@ -71,7 +307,7 @@
 
     // Close on backdrop click
     modal.addEventListener('click', (e) => {
-      const rect = (modal as HTMLDialogElement).getBoundingClientRect();
+      const rect = modal.getBoundingClientRect();
       const inDialog =
         e.clientY >= rect.top && e.clientY <= rect.bottom &&
         e.clientX >= rect.left && e.clientX <= rect.right;
@@ -85,6 +321,8 @@
       video.pause();
       video.removeAttribute('src');
       video.load();
+      showView();
+      currentCard = null;
     });
   }
 </script>

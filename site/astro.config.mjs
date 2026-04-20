@@ -8,6 +8,12 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   site: 'https://ig-workout.pages.dev',
 
+  // SSR mode — needed so /api/* routes can run at request time. Individual
+  // pages opt back into static via `export const prerender = true;` (the
+  // homepage does — it reads clips.json at build time; a small client script
+  // patches the DOM with any live edits from the DB on each page load).
+  output: 'server',
+
   vite: {
     plugins: [tailwindcss()],
   },

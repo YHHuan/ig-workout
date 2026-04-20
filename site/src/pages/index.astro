@@ -4,6 +4,13 @@ import ClipCard from '../components/ClipCard.astro';
 import ClipModal from '../components/ClipModal.astro';
 import CategoryFilter from '../components/CategoryFilter.astro';
 import { getClips } from '../lib/clips';
+
+// Prerender at build time from clips.json. The page is fast on first paint;
+// a small client script in ClipModal then fetches /api/clips to apply any DB
+// edits made since the last deploy. New clips still need a rebuild (Phase 3
+// pipeline handles those); this route is only for field edits.
+export const prerender = true;
+
 const clips = await getClips();
 ---
 <Layout title="Clips">
@@ -32,3 +39,47 @@ const clips = await getClips();
 
   <ClipModal />
 </Layout>
+
+<script>
+  // Page-load overlay: fetch /api/clips and patch any cards whose DB state
+  // drifts from the baked HTML. This is how edits from another device (or
+  // from earlier today, if this user hasn't reloaded since) show up without
+  // waiting for a redeploy. The card that was just saved on THIS device is
+  // already up-to-date — the overlay just re-applies the same values, a no-op.
+  (async function overlayEdits() {
+    try {
+      const res = await fetch('/api/clips', { credentials: 'omit' });
+      if (!res.ok) return;
+      const body = await res.json();
+      const clips: Array<Record<string, unknown>> = body.clips ?? [];
+      for (const c of clips) {
+        const id = c.id as string;
+        const card = document.querySelector<HTMLElement>(`.clip-card[data-id="${CSS.escape(id)}"]`);
+        if (!card) continue;
+        if (typeof c.exercise_name === 'string') card.dataset.name = c.exercise_name;
+        if (typeof c.category === 'string') card.dataset.category = c.category;
+        card.dataset.muscle = typeof c.muscle_group === 'string' ? c.muscle_group : '';
+        card.dataset.equipment = Array.isArray(c.equipment) ? (c.equipment as string[]).join(', ') : '';
+        card.dataset.cues = JSON.stringify(Array.isArray(c.form_cues) ? c.form_cues : []);
+        const conf = typeof c.exercise_name_confidence === 'number' ? c.exercise_name_confidence : 1;
+        card.dataset.confidence = String(conf);
+
+        // Visible label — first `.text-sm` inside the bottom-gradient overlay.
+        const label = card.querySelector<HTMLDivElement>('.absolute.bottom-0 .text-sm');
+        if (label) label.textContent = card.dataset.name || '';
+
+        // Amber dashed border reflects the fresh confidence.
+        const amber = ['border', 'border-dashed', 'border-amber-500/60'];
+        if (conf < 0.7) card.classList.add(...amber);
+        else card.classList.remove(...amber);
+      }
+      // Re-apply the currently-selected category filter so cards that changed
+      // category show/hide correctly. (Category counts in the filter bar are
+      // still stale until the next rebuild — acceptable.)
+      const active = document.querySelector<HTMLButtonElement>('[data-category-filter][data-active="true"]');
+      active?.dispatchEvent(new Event('click', { bubbles: true }));
+    } catch {
+      // Overlay is best-effort — static HTML remains the fallback.
+    }
+  })();
+</script>

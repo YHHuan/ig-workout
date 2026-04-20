@@ -1,1 +1,151 @@
-[]
+[
+  {
+    "id": "duscu-01",
+    "exercise_name": "2-Point Ball Drops",
+    "clip_src": "/clips/duscu-01.mp4",
+    "thumb_src": "/thumbs/duscu-01.jpg",
+    "form_cues": ["Contralateral core control and stability"],
+    "muscle_group": "core",
+    "equipment": ["medicine ball"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
+  },
+  {
+    "id": "duscu-02",
+    "exercise_name": "Bosu Ball Halos",
+    "clip_src": "/clips/duscu-02.mp4",
+    "thumb_src": "/thumbs/duscu-02.jpg",
+    "form_cues": ["Core control / stability"],
+    "muscle_group": "core",
+    "equipment": ["bosu ball", "weight plate"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
+  },
+  {
+    "id": "duscu-03",
+    "exercise_name": "Bosu Ball Around the Worlds",
+    "clip_src": "/clips/duscu-03.mp4",
+    "thumb_src": "/thumbs/duscu-03.jpg",
+    "form_cues": ["Core stability / core control"],
+    "muscle_group": "core",
+    "equipment": ["bosu ball", "weight plate"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
+  },
+  {
+    "id": "duscu-04",
+    "exercise_name": "Bosu Ball Offset Holds",
+    "clip_src": "/clips/duscu-04.mp4",
+    "thumb_src": "/thumbs/duscu-04.jpg",
+    "form_cues": [
+      "Develops lateral chain",
+      "Important stabilizers of the lower back"
+    ],
+    "muscle_group": "core",
+    "equipment": ["bosu ball", "kettlebell"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
+  },
+  {
+    "id": "duscu-05",
+    "exercise_name": "Offset Marches",
+    "clip_src": "/clips/duscu-05.mp4",
+    "thumb_src": "/thumbs/duscu-05.jpg",
+    "form_cues": [
+      "Improve lateral chain strength",
+      "Single-leg stability"
+    ],
+    "muscle_group": "core",
+    "equipment": ["kettlebell"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
+  },
+  {
+    "id": "duscu-06",
+    "exercise_name": "Offset Marches + Banded Perturbations",
+    "clip_src": "/clips/duscu-06.mp4",
+    "thumb_src": "/thumbs/duscu-06.jpg",
+    "form_cues": [
+      "Same as offset marches with added difficulty",
+      "Band introduces unpredictable pull"
+    ],
+    "muscle_group": "core",
+    "equipment": ["kettlebell", "resistance band"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
+  },
+  {
+    "id": "duscu-07",
+    "exercise_name": "Perturbation Split-Stance Rotations",
+    "clip_src": "/clips/duscu-07.mp4",
+    "thumb_src": "/thumbs/duscu-07.jpg",
+    "form_cues": ["Improve core control through rotation"],
+    "muscle_group": "core",
+    "equipment": ["medicine ball", "resistance band"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
+  },
+  {
+    "id": "dundek-01",
+    "exercise_name": "Step Up (Barbell)",
+    "clip_src": "/clips/dundek-01.mp4",
+    "thumb_src": "/thumbs/dundek-01.jpg",
+    "form_cues": [],
+    "muscle_group": "legs",
+    "equipment": ["barbell", "box"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
+  },
+  {
+    "id": "dundek-02",
+    "exercise_name": "Incline Bench Press, Alternating DB",
+    "clip_src": "/clips/dundek-02.mp4",
+    "thumb_src": "/thumbs/dundek-02.jpg",
+    "form_cues": [],
+    "muscle_group": "chest",
+    "equipment": ["dumbbells", "bench"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
+  },
+  {
+    "id": "dundek-03",
+    "exercise_name": "Single-Leg RDL (Barbell)",
+    "clip_src": "/clips/dundek-03.mp4",
+    "thumb_src": "/thumbs/dundek-03.jpg",
+    "form_cues": [],
+    "muscle_group": "posterior chain",
+    "equipment": ["barbell"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
+  },
+  {
+    "id": "dundek-04",
+    "exercise_name": "Half-Kneeling Shoulder Press (DB)",
+    "clip_src": "/clips/dundek-04.mp4",
+    "thumb_src": "/thumbs/dundek-04.jpg",
+    "form_cues": [],
+    "muscle_group": "shoulders",
+    "equipment": ["dumbbell"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
+  },
+  {
+    "id": "dundek-05",
+    "exercise_name": "Side Plank Row (Power Band)",
+    "clip_src": "/clips/dundek-05.mp4",
+    "thumb_src": "/thumbs/dundek-05.jpg",
+    "form_cues": [],
+    "muscle_group": "core",
+    "equipment": ["power band"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
+  },
+  {
+    "id": "dundek-06",
+    "exercise_name": "Adductor Hold (Short Lever)",
+    "clip_src": "/clips/dundek-06.mp4",
+    "thumb_src": "/thumbs/dundek-06.jpg",
+    "form_cues": [],
+    "muscle_group": "adductors",
+    "equipment": [],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
+  },
+  {
+    "id": "dundek-07",
+    "exercise_name": "Single-Leg Bosch Hold (Ground)",
+    "clip_src": "/clips/dundek-07.mp4",
+    "thumb_src": "/thumbs/dundek-07.jpg",
+    "form_cues": [],
+    "muscle_group": "posterior chain",
+    "equipment": [],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
+  }
+]

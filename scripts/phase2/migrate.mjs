@@ -22,7 +22,7 @@ import { createReadStream } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
-import pg from 'pg';
+import { createClient } from '@supabase/supabase-js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..', '..');
@@ -46,7 +46,8 @@ const R2_ACCOUNT_ID         = need('R2_ACCOUNT_ID');
 const R2_ACCESS_KEY_ID      = need('R2_ACCESS_KEY_ID');
 const R2_SECRET_ACCESS_KEY  = need('R2_SECRET_ACCESS_KEY');
 const R2_BUCKET             = need('R2_BUCKET');
-const SUPABASE_DB_URL       = need('SUPABASE_DB_URL');
+const SUPABASE_URL          = need('SUPABASE_URL');
+const SUPABASE_SRK          = need('SUPABASE_SERVICE_ROLE_KEY');
 
 // ---- Clients -----------------------------------------------------------
 const s3 = new S3Client({
@@ -58,9 +59,9 @@ const s3 = new S3Client({
   },
 });
 
-const pgClient = new pg.Client({
-  connectionString: SUPABASE_DB_URL,
-  ssl: { rejectUnauthorized: false },
+const supabase = createClient(SUPABASE_URL, SUPABASE_SRK, {
+  auth: { persistSession: false },
+  db: { schema: 'workout' },
 });
 
 // ---- Helpers -----------------------------------------------------------
@@ -80,32 +81,17 @@ async function uploadFile(absPath, key, contentType) {
     console.log(`  [dry] PUT ${key} (${(size / 1024).toFixed(1)} KB)`);
     return;
   }
-  // R2 over home broadband sometimes throws EPROTO/EPIPE mid-stream.
-  // Retry a few times with a fresh read stream each attempt.
-  const maxAttempts = 4;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: R2_BUCKET,
-          Key: key,
-          Body: createReadStream(absPath),
-          ContentType: contentType,
-          ContentLength: size,
-          CacheControl: 'public, max-age=31536000, immutable',
-        }),
-      );
-      console.log(`  uploaded ${key} (${(size / 1024).toFixed(1)} KB)${attempt > 1 ? ` [retry ${attempt}]` : ''}`);
-      return;
-    } catch (e) {
-      const transient = ['EPROTO', 'EPIPE', 'ECONNRESET', 'ETIMEDOUT'].includes(e?.code)
-        || /decryption failed|bad record mac/i.test(e?.message || '');
-      if (!transient || attempt === maxAttempts) throw e;
-      const backoff = 500 * attempt;
-      console.log(`  retry ${attempt}/${maxAttempts} after ${e.code || e.name} — sleeping ${backoff}ms`);
-      await new Promise((r) => setTimeout(r, backoff));
-    }
-  }
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: R2_BUCKET,
+      Key: key,
+      Body: createReadStream(absPath),
+      ContentType: contentType,
+      ContentLength: size,
+      CacheControl: 'public, max-age=31536000, immutable',
+    }),
+  );
+  console.log(`  uploaded ${key} (${(size / 1024).toFixed(1)} KB)`);
 }
 
 // Map a clip_src path like "/clips/duscu-01.mp4" to R2 key "clips/duscu-01.mp4"
@@ -163,39 +149,14 @@ async function main() {
   }
 
   console.log(`\n[db] upserting ${rows.length} rows into workout.clips`);
-  await pgClient.connect();
-  try {
-    // One statement, parameterised, per row — simpler than building a multi-row VALUES.
-    const UPSERT = `
-      insert into workout.clips (
-        id, exercise_name, category, muscle_group, equipment, form_cues, rep_count,
-        clip_key, thumb_key, source_url, exercise_name_confidence, boundary_confidence
-      ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-      on conflict (id) do update set
-        exercise_name = excluded.exercise_name,
-        category = excluded.category,
-        muscle_group = excluded.muscle_group,
-        equipment = excluded.equipment,
-        form_cues = excluded.form_cues,
-        rep_count = excluded.rep_count,
-        clip_key = excluded.clip_key,
-        thumb_key = excluded.thumb_key,
-        source_url = excluded.source_url,
-        exercise_name_confidence = excluded.exercise_name_confidence,
-        boundary_confidence = excluded.boundary_confidence
-    `;
-    for (const r of rows) {
-      await pgClient.query(UPSERT, [
-        r.id, r.exercise_name, r.category, r.muscle_group, r.equipment, r.form_cues,
-        r.rep_count, r.clip_key, r.thumb_key, r.source_url,
-        r.exercise_name_confidence, r.boundary_confidence,
-      ]);
-    }
-    const { rows: countRows } = await pgClient.query('select count(*)::int as n from workout.clips');
-    console.log(`[db] done — workout.clips row count = ${countRows[0].n}`);
-  } finally {
-    await pgClient.end();
+  const { error } = await supabase
+    .from('clips')
+    .upsert(rows, { onConflict: 'id' });
+  if (error) {
+    console.error('[db] upsert failed:', error);
+    process.exit(1);
   }
+  console.log('[db] done');
 }
 
 main().catch((e) => {

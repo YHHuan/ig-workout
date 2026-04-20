@@ -3,253 +3,208 @@
     "id": "duscu-01",
     "exercise_name": "2-Point Ball Drops",
     "category": "core",
-    "form_cues": [
-      "Contralateral core control and stability"
-    ],
+    "clip_src": "/clips/duscu-01.mp4",
+    "thumb_src": "/thumbs/duscu-01.jpg",
+    "form_cues": ["Contralateral core control and stability"],
     "muscle_group": "core",
-    "equipment": [
-      "medicine ball"
-    ],
-    "source_url": "https://www.instagram.com/p/DUscujviMFW/",
-    "clip_key": "clips/duscu-01.mp4",
-    "thumb_key": "thumbs/duscu-01.jpg"
+    "equipment": ["medicine ball"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
   },
   {
     "id": "duscu-02",
     "exercise_name": "Bosu Ball Halos",
     "category": "core",
-    "form_cues": [
-      "Core control / stability"
-    ],
+    "clip_src": "/clips/duscu-02.mp4",
+    "thumb_src": "/thumbs/duscu-02.jpg",
+    "form_cues": ["Core control / stability"],
     "muscle_group": "core",
-    "equipment": [
-      "bosu ball",
-      "weight plate"
-    ],
-    "source_url": "https://www.instagram.com/p/DUscujviMFW/",
-    "clip_key": "clips/duscu-02.mp4",
-    "thumb_key": "thumbs/duscu-02.jpg"
+    "equipment": ["bosu ball", "weight plate"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
   },
   {
     "id": "duscu-03",
     "exercise_name": "Bosu Ball Around the Worlds",
     "category": "core",
-    "form_cues": [
-      "Core stability / core control"
-    ],
+    "clip_src": "/clips/duscu-03.mp4",
+    "thumb_src": "/thumbs/duscu-03.jpg",
+    "form_cues": ["Core stability / core control"],
     "muscle_group": "core",
-    "equipment": [
-      "bosu ball",
-      "weight plate"
-    ],
-    "source_url": "https://www.instagram.com/p/DUscujviMFW/",
-    "clip_key": "clips/duscu-03.mp4",
-    "thumb_key": "thumbs/duscu-03.jpg"
+    "equipment": ["bosu ball", "weight plate"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
   },
   {
     "id": "duscu-04",
     "exercise_name": "Bosu Ball Offset Holds",
     "category": "core",
+    "clip_src": "/clips/duscu-04.mp4",
+    "thumb_src": "/thumbs/duscu-04.jpg",
     "form_cues": [
       "Develops lateral chain",
       "Important stabilizers of the lower back"
     ],
     "muscle_group": "lateral chain",
-    "equipment": [
-      "bosu ball",
-      "kettlebell"
-    ],
-    "source_url": "https://www.instagram.com/p/DUscujviMFW/",
-    "clip_key": "clips/duscu-04.mp4",
-    "thumb_key": "thumbs/duscu-04.jpg"
+    "equipment": ["bosu ball", "kettlebell"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
   },
   {
     "id": "duscu-05",
     "exercise_name": "Offset Marches",
     "category": "core",
+    "clip_src": "/clips/duscu-05.mp4",
+    "thumb_src": "/thumbs/duscu-05.jpg",
     "form_cues": [
       "Improve lateral chain strength",
       "Single-leg stability"
     ],
     "muscle_group": "lateral chain",
-    "equipment": [
-      "kettlebell"
-    ],
-    "source_url": "https://www.instagram.com/p/DUscujviMFW/",
-    "clip_key": "clips/duscu-05.mp4",
-    "thumb_key": "thumbs/duscu-05.jpg"
+    "equipment": ["kettlebell"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
   },
   {
     "id": "duscu-06",
     "exercise_name": "Offset Marches + Banded Perturbations",
     "category": "core",
+    "clip_src": "/clips/duscu-06.mp4",
+    "thumb_src": "/thumbs/duscu-06.jpg",
     "form_cues": [
       "Same as offset marches with added difficulty",
       "Band introduces unpredictable pull"
     ],
     "muscle_group": "lateral chain",
-    "equipment": [
-      "kettlebell",
-      "resistance band"
-    ],
-    "source_url": "https://www.instagram.com/p/DUscujviMFW/",
-    "clip_key": "clips/duscu-06.mp4",
-    "thumb_key": "thumbs/duscu-06.jpg"
+    "equipment": ["kettlebell", "resistance band"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
   },
   {
     "id": "duscu-07",
     "exercise_name": "Perturbation Split-Stance Rotations",
     "category": "core",
-    "form_cues": [
-      "Improve core control through rotation"
-    ],
+    "clip_src": "/clips/duscu-07.mp4",
+    "thumb_src": "/thumbs/duscu-07.jpg",
+    "form_cues": ["Improve core control through rotation"],
     "muscle_group": "rotational core",
-    "equipment": [
-      "medicine ball",
-      "resistance band"
-    ],
-    "source_url": "https://www.instagram.com/p/DUscujviMFW/",
-    "clip_key": "clips/duscu-07.mp4",
-    "thumb_key": "thumbs/duscu-07.jpg"
+    "equipment": ["medicine ball", "resistance band"],
+    "source_url": "https://www.instagram.com/p/DUscujviMFW/"
   },
   {
     "id": "dundek-01",
     "exercise_name": "Step Up (Barbell)",
     "category": "legs",
+    "clip_src": "/clips/dundek-01.mp4",
+    "thumb_src": "/thumbs/dundek-01.jpg",
     "form_cues": [],
     "muscle_group": "glutes / quads",
-    "equipment": [
-      "barbell",
-      "box"
-    ],
-    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/",
-    "clip_key": "clips/dundek-01.mp4",
-    "thumb_key": "thumbs/dundek-01.jpg"
+    "equipment": ["barbell", "box"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
   },
   {
     "id": "dundek-02",
     "exercise_name": "Incline Bench Press, Alternating DB",
     "category": "upper",
+    "clip_src": "/clips/dundek-02.mp4",
+    "thumb_src": "/thumbs/dundek-02.jpg",
     "form_cues": [],
     "muscle_group": "chest",
-    "equipment": [
-      "dumbbells",
-      "bench"
-    ],
-    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/",
-    "clip_key": "clips/dundek-02.mp4",
-    "thumb_key": "thumbs/dundek-02.jpg"
+    "equipment": ["dumbbells", "bench"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
   },
   {
     "id": "dundek-03",
     "exercise_name": "Single-Leg RDL (Barbell)",
     "category": "legs",
+    "clip_src": "/clips/dundek-03.mp4",
+    "thumb_src": "/thumbs/dundek-03.jpg",
     "form_cues": [],
     "muscle_group": "posterior chain",
-    "equipment": [
-      "barbell"
-    ],
-    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/",
-    "clip_key": "clips/dundek-03.mp4",
-    "thumb_key": "thumbs/dundek-03.jpg"
+    "equipment": ["barbell"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
   },
   {
     "id": "dundek-04",
     "exercise_name": "Half-Kneeling Shoulder Press (DB)",
     "category": "upper",
+    "clip_src": "/clips/dundek-04.mp4",
+    "thumb_src": "/thumbs/dundek-04.jpg",
     "form_cues": [],
     "muscle_group": "shoulders",
-    "equipment": [
-      "dumbbell"
-    ],
-    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/",
-    "clip_key": "clips/dundek-04.mp4",
-    "thumb_key": "thumbs/dundek-04.jpg"
+    "equipment": ["dumbbell"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
   },
   {
     "id": "dundek-05",
     "exercise_name": "Side Plank Row (Power Band)",
     "category": "core",
+    "clip_src": "/clips/dundek-05.mp4",
+    "thumb_src": "/thumbs/dundek-05.jpg",
     "form_cues": [],
     "muscle_group": "core / back",
-    "equipment": [
-      "power band"
-    ],
-    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/",
-    "clip_key": "clips/dundek-05.mp4",
-    "thumb_key": "thumbs/dundek-05.jpg"
+    "equipment": ["power band"],
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
   },
   {
     "id": "dundek-06",
     "exercise_name": "Adductor Hold (Short Lever)",
     "category": "legs",
+    "clip_src": "/clips/dundek-06.mp4",
+    "thumb_src": "/thumbs/dundek-06.jpg",
     "form_cues": [],
     "muscle_group": "adductors",
     "equipment": [],
-    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/",
-    "clip_key": "clips/dundek-06.mp4",
-    "thumb_key": "thumbs/dundek-06.jpg"
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
   },
   {
     "id": "dundek-07",
     "exercise_name": "Single-Leg Bosch Hold (Ground)",
     "category": "legs",
+    "clip_src": "/clips/dundek-07.mp4",
+    "thumb_src": "/thumbs/dundek-07.jpg",
     "form_cues": [],
     "muscle_group": "posterior chain",
     "equipment": [],
-    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/",
-    "clip_key": "clips/dundek-07.mp4",
-    "thumb_key": "thumbs/dundek-07.jpg"
+    "source_url": "https://www.instagram.com/p/DUNdeKXCH8s/"
   },
   {
     "id": "dswbei-01",
-    "exercise_name": "Lunge Swing → Lunge Chop Swing",
+    "exercise_name": "Lunge Swing \u2192 Lunge Chop Swing",
     "category": "legs",
+    "clip_src": "/clips/dswbei-01.mp4",
+    "thumb_src": "/thumbs/dswbei-01.jpg",
     "form_cues": [
       "Lunge-based swing fires up lower-body strength",
       "Chop variant improves coordination"
     ],
     "muscle_group": "legs / core",
-    "equipment": [
-      "kettlebell"
-    ],
+    "equipment": ["kettlebell"],
     "boundary_confidence": 0.6,
-    "source_url": "https://www.instagram.com/p/DSwbei_igbU/",
-    "clip_key": "clips/dswbei-01.mp4",
-    "thumb_key": "thumbs/dswbei-01.jpg"
+    "source_url": "https://www.instagram.com/p/DSwbei_igbU/"
   },
   {
     "id": "dswbei-02",
     "exercise_name": "Figure 8 Lunges",
     "category": "legs",
+    "clip_src": "/clips/dswbei-02.mp4",
+    "thumb_src": "/thumbs/dswbei-02.jpg",
     "form_cues": [
       "Unlocks hip mobility",
       "Trains rotational control"
     ],
     "muscle_group": "hips / legs",
-    "equipment": [
-      "kettlebell"
-    ],
+    "equipment": ["kettlebell"],
     "boundary_confidence": 0.6,
-    "source_url": "https://www.instagram.com/p/DSwbei_igbU/",
-    "clip_key": "clips/dswbei-02.mp4",
-    "thumb_key": "thumbs/dswbei-02.jpg"
+    "source_url": "https://www.instagram.com/p/DSwbei_igbU/"
   },
   {
     "id": "dswbei-03",
-    "exercise_name": "Row → Clean → Rotational Press",
+    "exercise_name": "Row \u2192 Clean \u2192 Rotational Press",
     "category": "full_body",
+    "clip_src": "/clips/dswbei-03.mp4",
+    "thumb_src": "/thumbs/dswbei-03.jpg",
     "form_cues": [
-      "Row → clean → rotational press in one flow",
+      "Row \u2192 clean \u2192 rotational press in one flow",
       "Upper-body strength + core stability"
     ],
     "muscle_group": "full body",
-    "equipment": [
-      "kettlebell"
-    ],
+    "equipment": ["kettlebell"],
     "boundary_confidence": 0.6,
-    "source_url": "https://www.instagram.com/p/DSwbei_igbU/",
-    "clip_key": "clips/dswbei-03.mp4",
-    "thumb_key": "thumbs/dswbei-03.jpg"
+    "source_url": "https://www.instagram.com/p/DSwbei_igbU/"
   }
 ]

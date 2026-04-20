@@ -12,6 +12,7 @@ const lowConfidence = (clip.exercise_name_confidence ?? 1) < 0.7;
     lowConfidence && 'border border-dashed border-amber-500/60',
   ]}
   data-id={clip.id}
+  data-category={clip.category}
   data-name={clip.exercise_name}
   data-clip={clip.clip_src}
   data-thumb={clip.thumb_src}

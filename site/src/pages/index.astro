@@ -2,13 +2,17 @@
 import Layout from '../layouts/Layout.astro';
 import ClipCard from '../components/ClipCard.astro';
 import ClipModal from '../components/ClipModal.astro';
+import CategoryFilter from '../components/CategoryFilter.astro';
 import { getClips } from '../lib/clips';
 const clips = await getClips();
 ---
 <Layout title="Clips">
-  <header class="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-900 bg-zinc-950/80 px-3 py-3 backdrop-blur">
-    <h1 class="text-base font-semibold tracking-tight">Clips</h1>
-    <span class="text-xs text-zinc-500">{clips.length} saved</span>
+  <header class="sticky top-0 z-10 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur">
+    <div class="flex items-center justify-between px-3 py-3">
+      <h1 class="text-base font-semibold tracking-tight">Clips</h1>
+      <span class="text-xs text-zinc-500"><span id="clip-count">{clips.length}</span> shown</span>
+    </div>
+    {clips.length > 0 && <CategoryFilter clips={clips} />}
   </header>
 
   {clips.length === 0 ? (

@@ -1,0 +1,61 @@
+---
+import { CATEGORIES, CATEGORY_LABELS, type Category } from '../lib/clips';
+import type { Clip } from '../lib/clips';
+interface Props { clips: Clip[]; }
+const { clips } = Astro.props;
+
+// Count per category so empty ones can be hidden.
+const counts: Record<string, number> = { all: clips.length };
+for (const c of CATEGORIES) counts[c] = 0;
+for (const clip of clips) counts[clip.category] = (counts[clip.category] ?? 0) + 1;
+
+const filters: { id: string; label: string; count: number }[] = [
+  { id: 'all', label: 'All', count: counts.all },
+  ...CATEGORIES
+    .filter((c) => counts[c] > 0)
+    .map((c) => ({ id: c, label: CATEGORY_LABELS[c as Category], count: counts[c] })),
+];
+---
+<nav
+  id="category-filter"
+  class="flex gap-2 overflow-x-auto border-b border-zinc-900 bg-zinc-950/80 px-2 py-2 backdrop-blur"
+  aria-label="Filter by category"
+>
+  {filters.map((f) => (
+    <button
+      type="button"
+      data-category-filter={f.id}
+      class="shrink-0 rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-300 transition-colors data-[active=true]:border-white data-[active=true]:bg-white data-[active=true]:text-black"
+    >
+      {f.label}<span class="ml-1.5 text-xs text-zinc-500 data-[active=true]:text-zinc-500">{f.count}</span>
+    </button>
+  ))}
+</nav>
+
+<script>
+  const KEY = 'clip-category-filter';
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-category-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('.clip-card');
+  const countEl = document.getElementById('clip-count');
+
+  function apply(cat: string) {
+    localStorage.setItem(KEY, cat);
+    buttons.forEach((b) => {
+      b.dataset.active = String(b.dataset.categoryFilter === cat);
+    });
+    let visible = 0;
+    cards.forEach((c) => {
+      const match = cat === 'all' || c.dataset.category === cat;
+      c.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    if (countEl) countEl.textContent = `${visible}`;
+  }
+
+  const initial = localStorage.getItem(KEY) || 'all';
+  apply(document.querySelector(`[data-category-filter="${initial}"]`) ? initial : 'all');
+
+  buttons.forEach((b) => {
+    b.addEventListener('click', () => apply(b.dataset.categoryFilter || 'all'));
+  });
+</script>
